@@ -135,7 +135,7 @@ lccn = LeetCodeClient(domain="cn")
 
 # Initialize Discord client
 intents = discord.Intents.default()
-intents.message_content = True  # Enable message content permission
+# intents.message_content = True  # Enable message content permission
 command_prefix = config.get("bot.command_prefix", "!")
 bot = commands.Bot(command_prefix=command_prefix, intents=intents)
 
@@ -214,7 +214,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
-    await bot.process_commands(message)  # 處理前綴指令
+    await bot.process_commands(message)
 
 
 @bot.command()
@@ -258,14 +258,22 @@ async def load_extensions():
         os.makedirs("./cogs")
         bot.logger.info("Created cogs directory.")
 
+    SKIP = {"similar_cog.py"}  # add more here if needed
+
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not filename.startswith("_"):  # 忽略如 __init__.py
+        if (
+            filename.endswith(".py")
+            and not filename.startswith("_")
+            and filename not in SKIP
+        ):
             try:
                 await bot.load_extension(f"cogs.{filename[:-3]}")
                 bot.logger.info(f"Successfully loaded extension: cogs.{filename[:-3]}")
             except Exception as e:
-                bot.logger.error(f"Failed to load extension cogs.{filename[:-3]}: {e}", exc_info=True)
-
+                bot.logger.error(
+                    f"Failed to load extension cogs.{filename[:-3]}: {e}",
+                    exc_info=True,
+                )
 
 async def main():
     # 全域初始化已在頂部完成
