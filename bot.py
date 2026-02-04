@@ -261,11 +261,7 @@ async def load_extensions():
     SKIP = {"similar_cog.py"}  # add more here if needed
 
     for filename in os.listdir("./cogs"):
-        if (
-            filename.endswith(".py")
-            and not filename.startswith("_")
-            and filename not in SKIP
-        ):
+        if filename.endswith(".py") and not filename.startswith("_") and filename not in SKIP:
             try:
                 await bot.load_extension(f"cogs.{filename[:-3]}")
                 bot.logger.info(f"Successfully loaded extension: cogs.{filename[:-3]}")
@@ -274,6 +270,7 @@ async def load_extensions():
                     f"Failed to load extension cogs.{filename[:-3]}: {e}",
                     exc_info=True,
                 )
+
 
 async def main():
     # 全域初始化已在頂部完成
